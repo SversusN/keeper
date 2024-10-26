@@ -1,0 +1,25 @@
+version: '4.0'
+
+services:
+  keeper:
+    build: ./
+    command: ./bin/keeper
+    ports:
+      - 3200:3200
+    depends_on:
+      - db
+    environment:
+      - DATABASE_URL=postgres://postgres:postgres@db:5432/postgres?sslmode=disable
+      - HOST=:3200
+      - LOG_LEVEL=info
+
+
+  db:
+    restart: always
+    image: postgres:16
+    environment:
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - 5436:5432
+    volumes:
+      - ./.database/postgres/data:/var/lib/postgresql/data
