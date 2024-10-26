@@ -1,6 +1,9 @@
+
+![Frame 1 (3)](https://github.com/user-attachments/assets/2ad8c533-4cce-4f9c-8f32-0ce92894df08)
+
 # Keeper
 Сервис для хранения и обработки паролей
-![cryptoGoha.png](..%2F..%2FDownloads%2FcryptoGoha.png)
+
 # Server
 
 Представляет собой gRPC сервер на GO
