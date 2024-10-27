@@ -14,6 +14,7 @@ require (
 	github.com/ory/dockertest/v3 v3.10.0
 	go.uber.org/zap v1.26.0
 	golang.org/x/crypto v0.21.0
+	golang.org/x/sync v0.6.0
 	google.golang.org/grpc v1.64.0
 	google.golang.org/protobuf v1.33.0
 )
