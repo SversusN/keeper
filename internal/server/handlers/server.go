@@ -30,10 +30,20 @@ type crypto interface {
 	GetUserID(tokenString, secret string) (int64, error)
 }
 
+type repository interface {
+	HealthCheck() error
+	CreateUser(ctx context.Context, login, password string) (int64, error)
+	FindUserByLogin(ctx context.Context, login string) (*storage.User, error)
+	SaveUserData(ctx context.Context, userID int64, name, dataType string, data []byte) error
+	GetUserData(ctx context.Context, userID int64) ([]storage.InfoRecord, error)
+	FindUserRecord(ctx context.Context, id, userID int64) (*storage.Record, error)
+	UpdateUserRecord(ctx context.Context, record *storage.Record) error
+}
+
 // Server – сервер приложения, который отвечает за хранение и обработку приватных данных пользователя.
 type Server struct {
 	pb.UnimplementedKeeperServer
-	Storage storage.Repository
+	Storage repository
 	crypto  crypto
 	Config  *config.Config
 	Logger  *logger.Logger
@@ -41,12 +51,12 @@ type Server struct {
 
 // NewServer – создает объект сервера
 // Функция принимает репозиторий, конфигуратор и логгер.
-func NewServer(r storage.Repository, c *config.Config, l *logger.Logger) *Server {
+func NewServer(r repository, c *config.Config, l *logger.Logger) *Server {
 	return &Server{
 		Storage: r,
 		Config:  c,
 		Logger:  l,
-		crypto:  &encrypter.Encrypter{},
+		crypto:  &encrypter.Token{},
 	}
 }
 

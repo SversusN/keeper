@@ -945,14 +945,14 @@ var file_keeper_proto_depIdxs = []int32{
 	10, // 0: keeper.UserDataListResponse.data:type_name -> keeper.UserDataNested
 	0,  // 1: keeper.Keeper.Ping:input_type -> keeper.PingRequest
 	2,  // 2: keeper.Keeper.Register:input_type -> keeper.RegisterRequest
-	4,  // 3: keeper.Keeper.SignIn:input_type -> keeper.SignInRequest
+	4,  // 3: keeper.Keeper.Register:input_type -> keeper.SignInRequest
 	6,  // 4: keeper.Keeper.SaveData:input_type -> keeper.SaveDataRequest
 	8,  // 5: keeper.Keeper.GetUserDataList:input_type -> keeper.UserDataListRequest
 	11, // 6: keeper.Keeper.GetUserData:input_type -> keeper.UserDataRequest
 	13, // 7: keeper.Keeper.UpdateUserData:input_type -> keeper.UpdateUserDataRequest
 	1,  // 8: keeper.Keeper.Ping:output_type -> keeper.PingResponse
 	3,  // 9: keeper.Keeper.Register:output_type -> keeper.RegisterResponse
-	5,  // 10: keeper.Keeper.SignIn:output_type -> keeper.SignInResponse
+	5,  // 10: keeper.Keeper.Register:output_type -> keeper.SignInResponse
 	7,  // 11: keeper.Keeper.SaveData:output_type -> keeper.SaveDataResponse
 	9,  // 12: keeper.Keeper.GetUserDataList:output_type -> keeper.UserDataListResponse
 	12, // 13: keeper.Keeper.GetUserData:output_type -> keeper.UserDataResponse

@@ -35,7 +35,7 @@ func TestMain(m *testing.M) {
 	}
 
 	testConfig = &config.Config{
-		DatabaseURL: "",
+		DatabaseDSN: "",
 		Host:        "localhost:3200",
 		LogLevel:    "debug",
 		SecretKey:   "test",
@@ -92,7 +92,7 @@ func TestNewServer(t *testing.T) {
 			},
 			want: &Server{
 				Storage: mockDB,
-				crypto:  &encrypter.Encrypter{},
+				crypto:  &encrypter.Token{},
 				Config:  testConfig,
 				Logger:  testLogger,
 			},

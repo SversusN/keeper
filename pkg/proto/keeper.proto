@@ -33,12 +33,12 @@ message RegisterResponse{
   string token = 1;
 }
 
-// SignUPRequest – запрос на вход пользователя
+// SignInRequest – запрос на вход пользователя
 message SignInRequest{
   string login = 1;
   string password = 2;
 }
-// SignUPResponse – ответ на вход пользователя
+// SignInResponse – ответ на вход пользователя
 message SignInResponse{
   // token – AuthToken для доступа к ресурсам
   string token = 1;

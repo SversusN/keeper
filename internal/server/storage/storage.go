@@ -5,7 +5,6 @@ import (
 	"embed"
 	"errors"
 	"fmt"
-
 	"time"
 
 	"github.com/golang-migrate/migrate/v4"
@@ -17,7 +16,6 @@ import (
 	"github.com/jackc/pgx/v5/pgconn"
 	_ "github.com/jackc/pgx/v5/stdlib"
 
-	internalerrs "github.com/SversusN/keeper/internal/server/internalerrors"
 	"github.com/SversusN/keeper/pkg/logger"
 )
 
@@ -32,20 +30,20 @@ type Database struct {
 }
 
 // NewStorage – функция инициализации хранилища.
-func NewStorage(dbURL string, l *logger.Logger) (*Database, error) {
-	if err := runMigrations(dbURL); err != nil {
-		return nil, fmt.Errorf("%w: Init storage error: %w", internalerrs.ErrMigrationsFailed, err)
+func NewStorage(dsn string, l *logger.Logger) (*Database, error) {
+	if err := runMigrations(dsn); err != nil {
+		return nil, fmt.Errorf("%w: Init storage error: %w", ErrMigrationsFailed, err)
 	}
 
-	db, err := pgx.Connect(context.Background(), dbURL)
+	db, err := pgx.Connect(context.Background(), dsn)
 	if err != nil {
-		return nil, fmt.Errorf("%w: Connect storage error: %w", internalerrs.ErrConnectionRefused, err)
+		return nil, fmt.Errorf("%w: Connect storage error: %w", ErrConnectionRefused, err)
 	}
 	database := &Database{
 		DB: db,
 		l:  l,
 	}
-	l.Log.Info("Database connected successfully")
+	l.Log.Info("Database connection was created")
 
 	return database, nil
 }
@@ -53,13 +51,13 @@ func NewStorage(dbURL string, l *logger.Logger) (*Database, error) {
 //go:embed db/migrations/*.sql
 var fs embed.FS
 
-func runMigrations(dbURL string) error {
+func runMigrations(dsn string) error {
 	const migrationsPath = "db/migrations"
 	d, err := iofs.New(fs, migrationsPath)
 	if err != nil {
 		return fmt.Errorf("failed to create byte file of migrations: %w", err)
 	}
-	m, err := migrate.NewWithSourceInstance("iofs", d, dbURL)
+	m, err := migrate.NewWithSourceInstance("iofs", d, dsn)
 	if err != nil {
 		return fmt.Errorf("failed to get a new migrate instance: %w", err)
 	}
@@ -77,6 +75,7 @@ func runMigrations(dbURL string) error {
 func (db *Database) HealthCheck() error {
 	ctx, cancel := context.WithTimeout(context.Background(), TimeOut)
 	defer cancel()
+
 	return db.DB.Ping(ctx)
 }
 
@@ -84,6 +83,7 @@ func (db *Database) HealthCheck() error {
 func (db *Database) Close() error {
 	ctx, cancel := context.WithTimeout(context.Background(), TimeOut)
 	defer cancel()
+
 	return db.DB.Close(ctx)
 }
 
@@ -96,9 +96,9 @@ func (db *Database) CreateUser(ctx context.Context, login, password string) (int
 		login, password).Scan(&id)
 	if err != nil {
 		if errors.As(err, &pgErr) && pgerrcode.IsIntegrityConstraintViolation(pgErr.Code) {
-			return 0, internalerrs.ErrConflict
+			return 0, ErrConflict
 		}
-		return 0, fmt.Errorf("%w: Create user error: %w", internalerrs.ErrCreateUser, err)
+		return 0, fmt.Errorf("%w: Create user error: %w", ErrCreateUser, err)
 	}
 
 	return id, nil
@@ -112,10 +112,10 @@ func (db *Database) FindUserByLogin(ctx context.Context, login string) (*User, e
 		login).Scan(&u.ID, &u.Login, &u.Password)
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
-			return nil, internalerrs.ErrNoRows
+			return nil, ErrNowRows
 		}
 
-		return nil, fmt.Errorf("%w: Find user error: %w", internalerrs.ErrFindUser, err)
+		return nil, fmt.Errorf("%w: Find user error: %w", ErrFindUser, err)
 	}
 
 	return &u, nil
@@ -131,9 +131,9 @@ func (db *Database) SaveUserData(ctx context.Context, userID int64, name, dataTy
 
 	if err != nil {
 		if errors.As(err, &pgErr) && pgerrcode.IsIntegrityConstraintViolation(pgErr.Code) {
-			return internalerrs.ErrConflict
+			return ErrConflict
 		}
-		return fmt.Errorf("%w: Save user data error: %w", internalerrs.ErrSaveUserData, err)
+		return fmt.Errorf("%w: Save user data error: %w", ErrSaveUserData, err)
 	}
 
 	return nil
@@ -145,7 +145,7 @@ func (db *Database) GetUserData(ctx context.Context, userID int64) ([]InfoRecord
 		`SELECT id, name, data_type, version from user_records where user_id=$1`,
 		userID)
 	if err != nil {
-		return nil, fmt.Errorf("%w: Request error: %w", internalerrs.ErrGetUserData, err)
+		return nil, fmt.Errorf("%w: Request error: %w", ErrGetUserData, err)
 	}
 	defer rows.Close()
 
@@ -154,13 +154,13 @@ func (db *Database) GetUserData(ctx context.Context, userID int64) ([]InfoRecord
 		var rec InfoRecord
 		err = rows.Scan(&rec.ID, &rec.Name, &rec.DataType, &rec.Version)
 		if err != nil {
-			return nil, fmt.Errorf("%w: Scan error: %w", internalerrs.ErrGetUserData, err)
+			return nil, fmt.Errorf("%w: Scan error: %w", ErrGetUserData, err)
 		}
 		records = append(records, rec)
 	}
 	err = rows.Err()
 	if err != nil {
-		return nil, fmt.Errorf("%w: Internal error: %w", internalerrs.ErrGetUserData, err)
+		return nil, fmt.Errorf("%w: Internal error: %w", ErrGetUserData, err)
 	}
 
 	return records, nil
@@ -175,9 +175,9 @@ func (db *Database) FindUserRecord(ctx context.Context, id, userID int64) (*Reco
 
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
-			return nil, internalerrs.ErrNoRows
+			return nil, ErrNowRows
 		}
-		return nil, fmt.Errorf("%w: Find user record error: %w", internalerrs.ErrFindUserRecord, err)
+		return nil, fmt.Errorf("%w: Find user record error: %w", ErrFindUserRecord, err)
 	}
 
 	return &rec, nil
@@ -187,7 +187,7 @@ func (db *Database) FindUserRecord(ctx context.Context, id, userID int64) (*Reco
 func (db *Database) UpdateUserRecord(ctx context.Context, rec *Record) error {
 	_, err := db.DB.Exec(ctx, `UPDATE user_records SET data=$1, version=version+1 WHERE id=$2`, rec.Data, rec.ID)
 	if err != nil {
-		return fmt.Errorf("%w: Update user record error: %w", internalerrs.ErrUpdateUserRecord, err)
+		return fmt.Errorf("%w: Update user record error: %w", ErrUpdateUserRecord, err)
 	}
 
 	return nil

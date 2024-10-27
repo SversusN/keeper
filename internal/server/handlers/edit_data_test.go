@@ -6,6 +6,7 @@ import (
 
 	"github.com/golang/mock/gomock"
 
+	"github.com/SversusN/keeper/internal/server/storage"
 	mock_storage "github.com/SversusN/keeper/internal/server/storage/mocks"
 	pb "github.com/SversusN/keeper/pkg/grpc"
 )
@@ -16,8 +17,8 @@ func TestServer_UpdateUserData(t *testing.T) {
 
 	mockDB = mock_storage.NewMockrepository(ctrl)
 	srv.Storage = mockDB
-	mockDB.EXPECT().FindUserRecord(gomock.Any(), int64(0), gomock.Any()).Return(nil, errors.ErrFindUserRecord).AnyTimes()
-	mockDB.EXPECT().FindUserRecord(gomock.Any(), int64(2), gomock.Any()).Return(nil, errors.ErrNoRows).AnyTimes()
+	mockDB.EXPECT().FindUserRecord(gomock.Any(), int64(0), gomock.Any()).Return(nil, storage.ErrFindUserRecord).AnyTimes()
+	mockDB.EXPECT().FindUserRecord(gomock.Any(), int64(2), gomock.Any()).Return(nil, storage.ErrNowRows).AnyTimes()
 	mockDB.EXPECT().FindUserRecord(gomock.Any(), gomock.Any(), gomock.Any()).Return(testRecord, nil).AnyTimes()
 	mockDB.EXPECT().UpdateUserRecord(gomock.Any(), gomock.Any()).Return(nil).AnyTimes()
 

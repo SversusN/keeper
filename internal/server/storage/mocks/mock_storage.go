@@ -81,10 +81,10 @@ func (mr *MockrepositoryMockRecorder) FindUserRecord(ctx, id, userID interface{}
 }
 
 // GetUserData mocks base method.
-func (m *Mockrepository) GetUserData(ctx context.Context, userID int64) ([]storage.InfoRecord, error) {
+func (m *Mockrepository) GetUserData(ctx context.Context, userID int64) ([]storage.ShortRecord, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetUserData", ctx, userID)
-	ret0, _ := ret[0].([]storage.InfoRecord)
+	ret0, _ := ret[0].([]storage.ShortRecord)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }

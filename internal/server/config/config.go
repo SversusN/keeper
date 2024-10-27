@@ -10,24 +10,24 @@ import (
 
 // Config – объект конфигурации сервера.
 type Config struct {
-	// DatabaseURL – dsn для подключения к БД.
-	DatabaseURL string `json:"database_url" env:"DATABASE_URL"`
+	// 	DatabaseURL  – dsn для подключения к БД.
+	DatabaseURL string `json:"database_url"`
 	// Host – адрес сервера.
-	Host string `json:"host" env:"HOST"`
+	Host string `json:"host"`
 	// LogLevel – уровень логгирования.
-	LogLevel string `json:"log_level" env:"LOG_LEVEL"`
+	LogLevel string `json:"log_level"`
 	// SecretKey – ключ шифрования.
-	SecretKey string `json:"secret_key" env:"SECRET_KEY"`
+	SecretKey string `json:"secret_key"`
 }
 
 // Initialize – функция инициализации конфига.
 func Initialize(configPath string) (*Config, error) {
-	configFile, err := os.ReadFile(configPath)
+	configFile, err := os.Open(configPath)
 	if err != nil {
 		return nil, fmt.Errorf("open file error: %w", err)
 	}
 	var c = &Config{}
-	err = json.Unmarshal(configFile, c)
+	err = json.NewDecoder(configFile).Decode(c)
 	if err != nil {
 		return nil, fmt.Errorf("parse JSON error: %w", err)
 	}

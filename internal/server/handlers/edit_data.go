@@ -3,13 +3,13 @@ package handlers
 import (
 	"context"
 	"errors"
-	errors2 "github.com/SversusN/keeper/internal/server/internalerrors"
 	"github.com/SversusN/keeper/internal/utils"
 	"net/http"
 
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
+	"github.com/SversusN/keeper/internal/server/storage"
 	pb "github.com/SversusN/keeper/pkg/grpc"
 )
 
@@ -23,7 +23,7 @@ func (s *Server) UpdateUserData(ctx context.Context, in *pb.UpdateUserDataReques
 
 	record, err := s.Storage.FindUserRecord(ctx, in.Id, userID)
 	if err != nil {
-		if errors.Is(err, errors2.ErrNoRows) {
+		if errors.Is(err, storage.ErrNowRows) {
 			return nil, status.Error(codes.NotFound, http.StatusText(http.StatusNoContent))
 		}
 		s.Logger.Log.Error(err)

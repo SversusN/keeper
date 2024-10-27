@@ -4,7 +4,7 @@ import (
 	"testing"
 )
 
-func TestEncrypter_BuildJWT(t *testing.T) {
+func TestToken_BuildJWT(t *testing.T) {
 	type args struct {
 		userID int64
 		secret string
@@ -25,7 +25,7 @@ func TestEncrypter_BuildJWT(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			c := &Encrypter{}
+			c := &Token{}
 			_, err := c.BuildJWT(tt.args.userID, tt.args.secret)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("BuildJWT() error = %v, wantErr %v", err, tt.wantErr)
@@ -35,7 +35,7 @@ func TestEncrypter_BuildJWT(t *testing.T) {
 	}
 }
 
-func TestEncrypter_CompareHash(t *testing.T) {
+func TestToken_CompareHash(t *testing.T) {
 	type args struct {
 		src  string
 		hash string
@@ -64,7 +64,7 @@ func TestEncrypter_CompareHash(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			c := &Encrypter{}
+			c := &Token{}
 			if err := c.CompareHash(tt.args.src, tt.args.hash); (err != nil) != tt.wantErr {
 				t.Errorf("CompareHash() error = %v, wantErr %v", err, tt.wantErr)
 			}
@@ -72,7 +72,7 @@ func TestEncrypter_CompareHash(t *testing.T) {
 	}
 }
 
-func TestEncrypter_GetUserID(t *testing.T) {
+func TestToken_GetUserID(t *testing.T) {
 	type args struct {
 		tokenString string
 		secret      string
@@ -104,7 +104,7 @@ func TestEncrypter_GetUserID(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			c := &Encrypter{}
+			c := &Token{}
 			got, err := c.GetUserID(tt.args.tokenString, tt.args.secret)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("GetUserID() error = %v, wantErr %v", err, tt.wantErr)
@@ -134,7 +134,7 @@ func TestEncrypter_HashFunc(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			c := &Encrypter{}
+			c := &Token{}
 			_, err := c.HashFunc(tt.args.src)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("HashFunc() error = %v, wantErr %v", err, tt.wantErr)

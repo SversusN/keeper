@@ -12,7 +12,7 @@ import (
 func LoggerInterceptor() logging.Logger {
 	return logging.LoggerFunc(func(ctx context.Context, lvl logging.Level, msg string, fields ...any) {
 		l := zap.NewExample()
-		f := make([]zap.Field, 0, len(fields)/2)
+		f := make([]zap.Field, 0, len(fields)/2) //nolint:gomnd // it's ok
 
 		for i := 0; i < len(fields); i += 2 {
 			key := fields[i]

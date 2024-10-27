@@ -8,6 +8,7 @@ CREATE TABLE IF NOT EXISTS users(
 
 CREATE UNIQUE INDEX IF NOT EXISTS login_idx on users (login);
 
+
 CREATE TABLE IF NOT EXISTS user_records(
     id         INT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
     name       VARCHAR(50) NOT NULL,

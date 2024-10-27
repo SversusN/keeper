@@ -6,6 +6,7 @@ import (
 
 	"github.com/golang/mock/gomock"
 
+	"github.com/SversusN/keeper/internal/server/storage"
 	mock_storage "github.com/SversusN/keeper/internal/server/storage/mocks"
 	pb "github.com/SversusN/keeper/pkg/grpc"
 )
@@ -17,7 +18,7 @@ func TestServer_SaveData(t *testing.T) {
 	mockDB = mock_storage.NewMockrepository(ctrl)
 	srv.Storage = mockDB
 	mockDB.EXPECT().SaveUserData(gomock.Any(), gomock.Any(), "error", gomock.Any(), gomock.Any()).Return(
-		errors.ErrSaveUserData).AnyTimes()
+		storage.ErrSaveUserData).AnyTimes()
 	mockDB.EXPECT().SaveUserData(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).Return(
 		nil).AnyTimes()
 

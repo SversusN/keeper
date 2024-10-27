@@ -3,12 +3,12 @@ package handlers
 import (
 	"context"
 	"errors"
-	errors2 "github.com/SversusN/keeper/internal/server/internalerrors"
 	"net/http"
 
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
+	"github.com/SversusN/keeper/internal/server/storage"
 	pb "github.com/SversusN/keeper/pkg/grpc"
 )
 
@@ -24,8 +24,8 @@ func (s *Server) Register(ctx context.Context, in *pb.RegisterRequest) (*pb.Regi
 
 	userID, err := s.Storage.CreateUser(ctx, login, encryptedPass)
 	if err != nil {
-		if errors.Is(err, errors2.ErrConflict) {
-			s.Logger.Log.Debug("oops, user already register")
+		if errors.Is(err, storage.ErrConflict) {
+			s.Logger.Log.Debug("user already exists")
 			return nil, status.Error(codes.AlreadyExists, http.StatusText(http.StatusConflict))
 		}
 		s.Logger.Log.Error(err)
@@ -42,13 +42,13 @@ func (s *Server) Register(ctx context.Context, in *pb.RegisterRequest) (*pb.Regi
 	}, nil
 }
 
-// SignIn – метод аутентификации на сервере.
+// SignIn – метод авторизации на сервере.
 func (s *Server) SignIn(ctx context.Context, in *pb.SignInRequest) (*pb.SignInResponse, error) {
 	login := in.Login
 	pass := in.Password
 	user, err := s.Storage.FindUserByLogin(ctx, login)
 	if err != nil {
-		if errors.Is(err, errors2.ErrNoRows) {
+		if errors.Is(err, storage.ErrNowRows) {
 			s.Logger.Log.Debugf("user with login `%v` not found", login)
 			return nil, status.Error(codes.NotFound, http.StatusText(http.StatusUnauthorized))
 		}

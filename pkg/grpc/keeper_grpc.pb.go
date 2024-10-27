@@ -153,7 +153,7 @@ func (UnimplementedKeeperServer) Register(context.Context, *RegisterRequest) (*R
 	return nil, status.Errorf(codes.Unimplemented, "method Register not implemented")
 }
 func (UnimplementedKeeperServer) SignIn(context.Context, *SignInRequest) (*SignInResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method SignIn not implemented")
+	return nil, status.Errorf(codes.Unimplemented, "method Register not implemented")
 }
 func (UnimplementedKeeperServer) SaveData(context.Context, *SaveDataRequest) (*SaveDataResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SaveData not implemented")
@@ -172,7 +172,7 @@ func (UnimplementedKeeperServer) testEmbeddedByValue()                {}
 
 // UnsafeKeeperServer may be embedded to opt out of forward compatibility for this service.
 // Use of this interface is not recommended, as added methods to KeeperServer will
-// result in compilation internalerrors.
+// result in compilation errors.
 type UnsafeKeeperServer interface {
 	mustEmbedUnimplementedKeeperServer()
 }
