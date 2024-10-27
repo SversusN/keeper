@@ -12,7 +12,7 @@ type PasswordData struct {
 
 // CardData – структура для типа данных Карта.
 type CardData struct {
-	// Number – номер карты.
+	// Number номер карточки .
 	Number string `json:"number"`
 	// ExpDate – дата, до которой валидна карта.
 	ExpDate string `json:"exp_date"`

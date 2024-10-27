@@ -80,7 +80,7 @@ func printData(data *models.UserData) error {
 		if err != nil {
 			return fmt.Errorf("json unmarshal error for struct FileData: %w", err)
 		}
-		pretty, err = json.MarshalIndent(fileStruct, "", "  ")
+		pretty, err = json.MarshalIndent(fileStruct, "", "  ") //TODO сохранять файл
 		if err != nil {
 			return fmt.Errorf(InternalErrTemplate, internalerrors.ErrInternal, err)
 		}

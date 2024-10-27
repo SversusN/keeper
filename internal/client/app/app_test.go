@@ -193,3 +193,4 @@ func (t *testPrinter) Print(_ string) {}
 func (t *testPrinter) Scan(a ...interface{}) (int, error) {
 	return 1, nil
 }
+func (t *testPrinter) PrintLogo() {}

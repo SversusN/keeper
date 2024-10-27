@@ -3,7 +3,7 @@ package app
 import "github.com/SversusN/keeper/internal/client/models"
 
 // SyncCache - запускается при получении информации о пользователе и пишет в буферизированный канал ID записи
-// saveDataToCache запускающий паралельную горутину скачки
+// saveDataToCache запускающий параллельную горутину скачки
 func (c *Client) SyncCache(records []models.UserDataList) {
 	for _, rec := range records {
 		cachedData, err := c.cache.GetUserData(models.UserDataModel{ID: rec.ID})
