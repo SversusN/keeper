@@ -9,9 +9,8 @@ services:
     depends_on:
       - db
     environment:
-      - DATABASE_URL=postgres://postgres:postgres@db:5432/postgres?sslmode=disable
+      - DATABASE_DSN=postgres://postgres:postgres@db:5432/postgres?sslmode=disable
       - HOST=:3200
-      - LOG_LEVEL=info
 
 
   db:
