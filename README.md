@@ -46,7 +46,8 @@
 
 Демонстрация работы клиента.
 
-![Uploading keeper.gif…]()
+
+![keeper](https://github.com/user-attachments/assets/fb580e24-5605-4728-9708-28571f29091f)
 
 
  
