@@ -52,4 +52,12 @@
 ## Запуск сервера
 Возможет в докере. Созданы doker-файлы для сборки, запуска и базы данных.
 
+## Сборка клиента
+
+# build linux
+    go build -ldflags "-X main.buildDate=${current_time} -X main.buildVersion=${git_hash}" -o ./cmd/client/build/linux ./cmd/client/
+    # build windows
+    GOOS=windows GOARCH=amd64 go build -ldflags"-X main.buildDate=${current_time} -X main.buildVersion=${git_hash}" -o ./cmd/client/build/win ./cmd/client
+    # build mac amd64
+    GOOS=darwin GOARCH=amd64 go build -ldflags "-X main.buildDate=${current_time} -X main.buildVersion=${git_hash}" -o ./cmd/client/build/mac ./cmd/client
  
