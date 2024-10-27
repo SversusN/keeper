@@ -44,7 +44,7 @@
 
 ![keeper-scheme](https://github.com/user-attachments/assets/90a30c4e-edb7-494e-b0e0-5049a3e72f7c)
 
-Демонстрация работы клиента.
+## Демонстрация работы клиента.
 
 
 ![keeper](https://github.com/user-attachments/assets/fb580e24-5605-4728-9708-28571f29091f)
