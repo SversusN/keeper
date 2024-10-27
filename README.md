@@ -56,7 +56,7 @@
 
 ## Сборка клиента
 
-# build linux
+    # build linux
     go build -ldflags "-X main.buildDate=${current_time} -X main.buildVersion=${git_hash}" -o ./cmd/client/build/linux ./cmd/client/
     # build windows
     GOOS=windows GOARCH=amd64 go build -ldflags"-X main.buildDate=${current_time} -X main.buildVersion=${git_hash}" -o ./cmd/client/build/win ./cmd/client
