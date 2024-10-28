@@ -986,3 +986,4 @@
 .database/postgres/data/base/1/1247
 .database/postgres/data/base/1/113
 .database/postgres/data/base/1/112
+*.stat
