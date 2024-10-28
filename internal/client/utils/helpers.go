@@ -2,6 +2,8 @@ package utils
 
 import (
 	"fmt"
+	"os"
+	"path/filepath"
 	"strings"
 	"time"
 )
@@ -33,4 +35,9 @@ func roboPrint(text string) {
 
 func (p *Printer) PrintLogo() {
 	fmt.Print(terminalColor, " ██ ▄█▀▓█████ ▓█████  ██▓███  ▓█████  ██▀███  \n ██▄█▒ ▓█   ▀ ▓█   ▀ ▓██░  ██▒▓█   ▀ ▓██ ▒ ██▒\n▓███▄░ ▒███   ▒███   ▓██░ ██▓▒▒███   ▓██ ░▄█ ▒\n▓██ █▄ ▒▓█  ▄ ▒▓█  ▄ ▒██▄█▓▒ ▒▒▓█  ▄ ▒██▀▀█▄  \n▒██▒ █▄░▒████▒░▒████▒▒██▒ ░  ░░▒████▒░██▓ ▒██▒\n▒ ▒▒ ▓▒░░ ▒░ ░░░ ▒░ ░▒▓▒░ ░  ░░░ ▒░ ░░ ▒▓ ░▒▓░\n░ ░▒ ▒░ ░ ░  ░ ░ ░  ░░▒ ░      ░ ░  ░  ░▒ ░ ▒░\n░ ░░ ░    ░      ░   ░░          ░     ░░   ░ \n░  ░      ░  ░   ░  ░            ░  ░   ░     \n                                              \n")
+}
+
+func SettingsParentPath() string {
+	currentDir, _ := os.Getwd()
+	return filepath.Join(currentDir, "appsettings.json")
 }

@@ -2,6 +2,7 @@
 package main
 
 import (
+	"github.com/SversusN/keeper/internal/client/utils"
 	"log"
 
 	"github.com/SversusN/keeper/internal/server/config"
@@ -23,7 +24,10 @@ func main() {
 func run() error {
 	settings, err := config.Initialize(configPath)
 	if err != nil {
-		return err
+		settings, err = config.Initialize(utils.SettingsParentPath())
+		if err != nil {
+			return err
+		}
 	}
 	l, err := logger.Initialize(settings.LogLevel)
 	if err != nil {
