@@ -14,6 +14,7 @@ RUN go build -o ./bin/keeper cmd/server/main.go
 
 FROM alpine as runner
 COPY --from=builder /usr/local/src/bin/keeper /
+COPY --from=builder /usr/local/src/config/server/appsettings.json /
 
 CMD ["./keeper"]
 EXPOSE 3200

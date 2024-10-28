@@ -3,7 +3,7 @@ version: '4.0'
 services:
   keeper:
     build: ./
-    command: ./bin/keeper
+    command: ./keeper
     ports:
       - 3200:3200
     depends_on:
@@ -19,6 +19,6 @@ services:
     environment:
       - POSTGRES_PASSWORD=postgres
     ports:
-      - 5436:5432
+      - 5432:5432
     volumes:
       - ./.database/postgres/data:/var/lib/postgresql/data
