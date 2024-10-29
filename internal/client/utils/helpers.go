@@ -28,7 +28,7 @@ func roboPrint(text string) {
 	arr := strings.Split(text, "")
 	for _, char := range arr {
 		fmt.Print(terminalColor, char)
-		<-time.After(25 * time.Millisecond)
+		<-time.After(20 * time.Millisecond)
 	}
 	fmt.Println()
 }

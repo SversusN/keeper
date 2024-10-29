@@ -9,18 +9,19 @@ import (
 
 // UserAuth – функция авторизации пользователя.
 func (c *Client) UserAuth() error {
-	var ans string
+	var answer string
 	c.printer.Print("Вы уже зарегистрированы? (y/n)")
-	_, err := c.printer.Scan(&ans)
+	_, err := c.printer.Scan(&answer)
 	if err != nil {
 		return fmt.Errorf(InternalErrTemplate, internalerrors.ErrInternal, err)
 	}
 
-	switch ans {
+	switch answer {
 	case "y":
 		authM, err := buildAuthData(c.printer)
 		if err != nil {
 			return err
+
 		}
 		return c.signIn(*authM)
 	case "n":
@@ -37,18 +38,20 @@ func (c *Client) UserAuth() error {
 func (c *Client) signIn(authM models.AuthModel) error {
 	_, err := c.gRPCClient.SignIn(authM)
 	if err != nil {
-		return fmt.Errorf("%w: Register error: %w", internalerrors.ErrUserNotAuthorized, err)
+		fmt.Printf("%w: SignIn error: %w \n", internalerrors.ErrUserNotAuthorized, err)
+		c.printer.Print("Ошибка! попробуйте еще раз...")
+		return c.UserAuth()
 	}
-
 	return nil
 }
 
 func (c *Client) register(authM models.AuthModel) error {
 	_, err := c.gRPCClient.Register(authM)
 	if err != nil {
-		return fmt.Errorf("%w: Register error: %w", internalerrors.ErrUserNotAuthorized, err)
+		fmt.Printf("%w: Register error: %w \n", internalerrors.ErrUserNotAuthorized, err)
+		c.printer.Print("Ошибка! попробуйте еще раз...")
+		return c.UserAuth()
 	}
-
 	return nil
 }
 
