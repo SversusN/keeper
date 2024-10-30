@@ -5,6 +5,8 @@ import (
 	"errors"
 	"fmt"
 	"github.com/SversusN/keeper/internal/client/internalerrors"
+	"os"
+	"path/filepath"
 
 	"github.com/SversusN/keeper/internal/client/models"
 )
@@ -80,10 +82,13 @@ func printData(data *models.UserData) error {
 		if err != nil {
 			return fmt.Errorf("json unmarshal error for struct FileData: %w", err)
 		}
-		pretty, err = json.MarshalIndent(fileStruct, "", "  ") //TODO сохранять файл
+		pretty, err = json.MarshalIndent(fileStruct, "", "  ")
+		currentDir, _ := os.Getwd()
+		err = os.WriteFile(filepath.Join(currentDir, data.Name), pretty, 0644) //TODO имя и расширение файла D:<
 		if err != nil {
 			return fmt.Errorf(InternalErrTemplate, internalerrors.ErrInternal, err)
 		}
+
 	case textDataType:
 		textStruct := &TextData{}
 		err := json.Unmarshal(data.Data, textStruct)
