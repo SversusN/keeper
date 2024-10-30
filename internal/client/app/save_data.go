@@ -136,7 +136,10 @@ func buildTextData(p printer) (*models.UserData, error) {
 	p.Print("Введите текст заметки")
 	//Нужно учесть пробелы
 	in := bufio.NewReader(os.Stdin)
-	t, _ := in.ReadString('\n')
+	t, err := in.ReadString('\n')
+	if err != nil {
+		return nil, fmt.Errorf(InternalErrTemplate, internalerrors.ErrInternal, err)
+	}
 	text.Text = strings.TrimSpace(t)
 	bd, err := json.Marshal(text)
 	if err != nil {
