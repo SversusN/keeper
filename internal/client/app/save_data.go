@@ -8,6 +8,7 @@ import (
 	"github.com/SversusN/keeper/internal/client/internalerrors"
 	"io"
 	"os"
+	"strings"
 
 	"github.com/SversusN/keeper/internal/client/models"
 )
@@ -133,11 +134,10 @@ func buildCardData(p printer) (*models.UserData, error) {
 func buildTextData(p printer) (*models.UserData, error) {
 	text := &TextData{}
 	p.Print("Введите текст заметки")
-	_, err := p.Scan(&text.Text)
-	if err != nil {
-		return nil, fmt.Errorf(InternalErrTemplate, internalerrors.ErrInternal, err)
-	}
-
+	//Нужно учесть пробелы
+	in := bufio.NewReader(os.Stdin)
+	t, _ := in.ReadString('\n')
+	text.Text = strings.TrimSpace(t)
 	bd, err := json.Marshal(text)
 	if err != nil {
 		return nil, fmt.Errorf(InternalErrTemplate, internalerrors.ErrInternal, err)
