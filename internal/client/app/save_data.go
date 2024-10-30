@@ -161,7 +161,10 @@ func buildFileData(p printer) (*models.UserData, error) {
 		return nil, fmt.Errorf(InternalErrTemplate, internalerrors.ErrInternal, err)
 	}
 	defer func() {
-		_ = openedFile.Close()
+		err = openedFile.Close()
+		if err != nil {
+			fmt.Errorf(InternalErrTemplate, internalerrors.ErrInternal, err)
+		}
 	}()
 
 	stat, err := openedFile.Stat()
@@ -174,6 +177,7 @@ func buildFileData(p printer) (*models.UserData, error) {
 	if err != nil && errors.Is(err, io.EOF) {
 		return nil, fmt.Errorf(InternalErrTemplate, internalerrors.ErrInternal, err)
 	}
+	file.Path = stat.Name()
 	file.Data = bs
 
 	bd, err := json.Marshal(file)

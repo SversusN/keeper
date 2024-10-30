@@ -987,3 +987,8 @@
 .database/postgres/data/base/1/113
 .database/postgres/data/base/1/112
 *.stat
+.database/postgres/data/base/5/16405_fsm
+.database/postgres/data/global/pg_internal.init.34
+.database/postgres/data/global/pg_internal.init.35
+123
+ко.txt

@@ -44,7 +44,7 @@ func (c *Client) GetUserData() error {
 		c.cache.Append(data) // складываем в кеш
 	}
 
-	err = printData(data)
+	err = viewData(data)
 	if err != nil {
 		return err
 	}
@@ -52,7 +52,7 @@ func (c *Client) GetUserData() error {
 	return nil
 }
 
-func printData(data *models.UserData) error {
+func viewData(data *models.UserData) error {
 	var pretty []byte
 	dataType := data.DataType
 	switch dataType {
@@ -84,11 +84,10 @@ func printData(data *models.UserData) error {
 		}
 		pretty, err = json.MarshalIndent(fileStruct, "", "  ")
 		currentDir, _ := os.Getwd()
-		err = os.WriteFile(filepath.Join(currentDir, data.Name), pretty, 0644) //TODO имя и расширение файла D:<
+		err = os.WriteFile(filepath.Join(currentDir, fileStruct.Path), fileStruct.Data, 0644) //TODO имя и расширение файла D:<
 		if err != nil {
 			return fmt.Errorf(InternalErrTemplate, internalerrors.ErrInternal, err)
 		}
-
 	case textDataType:
 		textStruct := &TextData{}
 		err := json.Unmarshal(data.Data, textStruct)
