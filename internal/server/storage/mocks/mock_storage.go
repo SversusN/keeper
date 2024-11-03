@@ -18,6 +18,11 @@ type Mockrepository struct {
 	recorder *MockrepositoryMockRecorder
 }
 
+func (m *Mockrepository) GetUserDataForSync(ctx context.Context, userID int64, ts int64) ([]storage.InfoRecord, error) {
+	//TODO implement me
+	panic("implement me")
+}
+
 // MockrepositoryMockRecorder is the mock recorder for Mockrepository.
 type MockrepositoryMockRecorder struct {
 	mock *Mockrepository
@@ -81,10 +86,10 @@ func (mr *MockrepositoryMockRecorder) FindUserRecord(ctx, id, userID interface{}
 }
 
 // GetUserData mocks base method.
-func (m *Mockrepository) GetUserData(ctx context.Context, userID int64) ([]storage.ShortRecord, error) {
+func (m *Mockrepository) GetUserData(ctx context.Context, userID int64) ([]storage.InfoRecord, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetUserData", ctx, userID)
-	ret0, _ := ret[0].([]storage.ShortRecord)
+	ret0, _ := ret[0].([]storage.InfoRecord)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }

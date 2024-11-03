@@ -38,6 +38,7 @@ type repository interface {
 	GetUserData(ctx context.Context, userID int64) ([]storage.InfoRecord, error)
 	FindUserRecord(ctx context.Context, id, userID int64) (*storage.Record, error)
 	UpdateUserRecord(ctx context.Context, record *storage.Record) error
+	GetUserDataForSync(ctx context.Context, userID int64, ts int64) ([]storage.InfoRecord, error)
 }
 
 // Server – сервер приложения, который отвечает за хранение и обработку приватных данных пользователя.

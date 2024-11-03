@@ -26,6 +26,7 @@ const (
 	Keeper_GetUserDataList_FullMethodName = "/keeper.Keeper/GetUserDataList"
 	Keeper_GetUserData_FullMethodName     = "/keeper.Keeper/GetUserData"
 	Keeper_UpdateUserData_FullMethodName  = "/keeper.Keeper/UpdateUserData"
+	Keeper_SyncUserData_FullMethodName    = "/keeper.Keeper/SyncUserData"
 )
 
 // KeeperClient is the client API for Keeper service.
@@ -42,6 +43,7 @@ type KeeperClient interface {
 	GetUserDataList(ctx context.Context, in *UserDataListRequest, opts ...grpc.CallOption) (*UserDataListResponse, error)
 	GetUserData(ctx context.Context, in *UserDataRequest, opts ...grpc.CallOption) (*UserDataResponse, error)
 	UpdateUserData(ctx context.Context, in *UpdateUserDataRequest, opts ...grpc.CallOption) (*UpdateUserDataResponse, error)
+	SyncUserData(ctx context.Context, in *SyncTimestamp, opts ...grpc.CallOption) (*UserDataListResponse, error)
 }
 
 type keeperClient struct {
@@ -122,6 +124,16 @@ func (c *keeperClient) UpdateUserData(ctx context.Context, in *UpdateUserDataReq
 	return out, nil
 }
 
+func (c *keeperClient) SyncUserData(ctx context.Context, in *SyncTimestamp, opts ...grpc.CallOption) (*UserDataListResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(UserDataListResponse)
+	err := c.cc.Invoke(ctx, Keeper_SyncUserData_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // KeeperServer is the server API for Keeper service.
 // All implementations must embed UnimplementedKeeperServer
 // for forward compatibility.
@@ -136,6 +148,7 @@ type KeeperServer interface {
 	GetUserDataList(context.Context, *UserDataListRequest) (*UserDataListResponse, error)
 	GetUserData(context.Context, *UserDataRequest) (*UserDataResponse, error)
 	UpdateUserData(context.Context, *UpdateUserDataRequest) (*UpdateUserDataResponse, error)
+	SyncUserData(context.Context, *SyncTimestamp) (*UserDataListResponse, error)
 	mustEmbedUnimplementedKeeperServer()
 }
 
@@ -153,7 +166,7 @@ func (UnimplementedKeeperServer) Register(context.Context, *RegisterRequest) (*R
 	return nil, status.Errorf(codes.Unimplemented, "method Register not implemented")
 }
 func (UnimplementedKeeperServer) SignIn(context.Context, *SignInRequest) (*SignInResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Register not implemented")
+	return nil, status.Errorf(codes.Unimplemented, "method SignIn not implemented")
 }
 func (UnimplementedKeeperServer) SaveData(context.Context, *SaveDataRequest) (*SaveDataResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SaveData not implemented")
@@ -166,6 +179,9 @@ func (UnimplementedKeeperServer) GetUserData(context.Context, *UserDataRequest) 
 }
 func (UnimplementedKeeperServer) UpdateUserData(context.Context, *UpdateUserDataRequest) (*UpdateUserDataResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateUserData not implemented")
+}
+func (UnimplementedKeeperServer) SyncUserData(context.Context, *SyncTimestamp) (*UserDataListResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SyncUserData not implemented")
 }
 func (UnimplementedKeeperServer) mustEmbedUnimplementedKeeperServer() {}
 func (UnimplementedKeeperServer) testEmbeddedByValue()                {}
@@ -314,6 +330,24 @@ func _Keeper_UpdateUserData_Handler(srv interface{}, ctx context.Context, dec fu
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Keeper_SyncUserData_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SyncTimestamp)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(KeeperServer).SyncUserData(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Keeper_SyncUserData_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(KeeperServer).SyncUserData(ctx, req.(*SyncTimestamp))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Keeper_ServiceDesc is the grpc.ServiceDesc for Keeper service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -348,6 +382,10 @@ var Keeper_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "UpdateUserData",
 			Handler:    _Keeper_UpdateUserData_Handler,
+		},
+		{
+			MethodName: "SyncUserData",
+			Handler:    _Keeper_SyncUserData_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

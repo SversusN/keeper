@@ -14,6 +14,7 @@ service Keeper {
   rpc GetUserDataList(UserDataListRequest) returns(UserDataListResponse);
   rpc GetUserData(UserDataRequest) returns(UserDataResponse);
   rpc UpdateUserData(UpdateUserDataRequest) returns(UpdateUserDataResponse);
+  rpc SyncUserData(SyncTimestamp) returns(UserDataListResponse);
 }
 
 // PingRequest - запрос на ping (empty)
@@ -93,4 +94,8 @@ message UpdateUserDataRequest{
 // UpdateUserDataResponse – результат обновления
 message UpdateUserDataResponse{
   string result = 1;
+}
+//SyncTimestamp запрашиваем по метке времени чего не хватает
+message SyncTimestamp{
+  int64 ts = 1;
 }

@@ -1,6 +1,9 @@
 package app
 
 import (
+	"sync/atomic"
+	"time"
+
 	"github.com/SversusN/keeper/internal/client/cache"
 	"github.com/SversusN/keeper/internal/client/config"
 	"github.com/SversusN/keeper/internal/client/grpcclient"
@@ -22,13 +25,19 @@ type grpcClient interface {
 	GetUserDataList() ([]models.UserDataList, error)
 	SaveUserData(model *models.UserData) error
 	UpdateUserData(model *models.UserData) error
+	SyncUserData(ts int64) ([]models.UserDataList, error)
 }
 
 type clientCache interface {
 	Append(data *models.UserData)
 	GetUserData(model models.UserDataModel) (*models.UserData, error)
 	GetUserDataList() []models.UserDataList
+	GetMaxTS() (int64, error)
 }
+
+// isSignIn - глобальная переменная состояния чтобы не запускать синхронизацию до старта
+var isSignIn atomic.Bool
+var isSyncProces atomic.Bool
 
 // Client – структура консольного клиента. Отвечает за сценарий приложения.
 type Client struct {
@@ -68,6 +77,8 @@ func NewClient(l *logger.Logger, c *config.Config, bv string, bd string) (*Clien
 }
 
 func (c *Client) startSync() {
+	ticker := time.NewTicker(time.Duration(c.Config.CashTimeRefresh) * time.Second)
+	defer ticker.Stop()
 	for {
 		select {
 		case ID := <-c.dataSyncChan:
@@ -77,6 +88,33 @@ func (c *Client) startSync() {
 				continue
 			}
 			c.UpdateDataInCache(model)
+		case <-ticker.C:
+			if !isSignIn.Load() || isSyncProces.Load() {
+				continue //не запрашиваем если не залогинены или eщe идет синхронизация
+			}
+			isSyncProces.Store(true)
+			maxTs, err := c.cache.GetMaxTS()
+			if err != nil {
+				c.Logger.Log.Errorf("get max ts error: %v", err)
+				isSyncProces.Store(false)
+				continue
+			}
+			result, err := c.gRPCClient.SyncUserData(maxTs)
+			if err != nil {
+				c.Logger.Log.Errorf("get user data error: %v", err)
+				isSyncProces.Store(false)
+				continue
+			}
+			for _, v := range result {
+				data, err := c.gRPCClient.GetUserData(models.UserDataModel{ID: v.ID})
+				if err != nil {
+					c.Logger.Log.Errorf("get user data error: %v", err)
+					isSyncProces.Store(false)
+					continue
+				}
+				c.UpdateDataInCache(data)
+				isSyncProces.Store(false)
+			}
 		default:
 			continue
 		}

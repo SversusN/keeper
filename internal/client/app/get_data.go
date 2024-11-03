@@ -34,14 +34,16 @@ func (c *Client) GetUserData() error {
 	}
 
 	m := models.UserDataModel{ID: dataID}
-	data, err = c.GetDataFromCache(m) // сначала пытаемся достать из кеша
+
+	data, err = c.gRPCClient.GetUserData(m)
 	if err != nil {
 		c.Logger.Log.Warnf("get data from cache error: %w", err)
-		data, err = c.gRPCClient.GetUserData(m) // если в кеше нет, идём на сервер
 		if err != nil {
 			return err
 		}
 		c.cache.Append(data) // складываем в кеш
+	} else {
+		data, err = c.GetDataFromCache(m)
 	}
 
 	err = viewData(data)
@@ -106,7 +108,7 @@ func viewData(data *models.UserData) error {
 	return nil
 }
 
-// GetUserDataList – получение информации о всех данных пользователя.
+// GetUserDataList – получение мета-информации о всех данных пользователя.
 func (c *Client) GetUserDataList() error {
 	records, err := c.gRPCClient.GetUserDataList()
 	if err != nil { // что-то с сервером

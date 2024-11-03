@@ -41,4 +41,6 @@ type UserData struct {
 	ID int64
 	// Version – версия данных.
 	Version int64
+	//Дата строки
+	CreatedAt string
 }

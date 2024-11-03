@@ -19,6 +19,8 @@ type Config struct {
 	ChanSize int64 `json:"chan_size" env:"CHAN_SIZE"`
 	//Секретное слово для клиента
 	PassPhrase string `json:"passphrase" env:"PASS_PHRASE"`
+	//Период обновления кэш
+	CashTimeRefresh int `json:"cash_time_refresh" env:"CASH_TIME_REFRESH"`
 }
 
 // Initialize – функция инициализации конфига.

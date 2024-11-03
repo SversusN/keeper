@@ -35,7 +35,7 @@ func TestMain(m *testing.M) {
 	}
 
 	testConfig = &config.Config{
-		DatabaseDSN: "",
+		DatabaseURL: "",
 		Host:        "localhost:3200",
 		LogLevel:    "debug",
 		SecretKey:   "test",

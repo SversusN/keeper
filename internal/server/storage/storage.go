@@ -192,3 +192,28 @@ func (db *Database) UpdateUserRecord(ctx context.Context, rec *Record) error {
 
 	return nil
 }
+
+func (db *Database) GetUserDataForSync(ctx context.Context, userID int64, ts int64) ([]InfoRecord, error) {
+	rows, err := db.DB.Query(ctx,
+		`SELECT id, name, data_type, version, created_at::text from user_records where user_id=$1 and  created_at > to_timestamp($2)::date`,
+		userID, ts)
+	if err != nil {
+		return nil, fmt.Errorf("%w: Request error: %w", ErrGetUserData, err)
+	}
+	defer rows.Close()
+	var records []InfoRecord
+	for rows.Next() {
+		var rec InfoRecord
+		err = rows.Scan(&rec.ID, &rec.Name, &rec.DataType, &rec.Version, &rec.CreatedAt)
+		if err != nil {
+			return nil, fmt.Errorf("%w: Scan error: %w", ErrGetUserData, err)
+		}
+		records = append(records, rec)
+	}
+	err = rows.Err()
+	if err != nil {
+		return nil, fmt.Errorf("%w: Internal error: %w", ErrGetUserData, err)
+	}
+
+	return records, nil
+}

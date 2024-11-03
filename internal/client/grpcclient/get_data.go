@@ -3,9 +3,9 @@ package grpcclient
 import (
 	"context"
 	"fmt"
-	"github.com/SversusN/keeper/internal/utils/encrypter"
 
 	"github.com/SversusN/keeper/internal/client/models"
+	"github.com/SversusN/keeper/internal/utils/encrypter"
 	pb "github.com/SversusN/keeper/pkg/grpc"
 )
 
@@ -21,11 +21,12 @@ func (c *Client) GetUserData(model models.UserDataModel) (*models.UserData, erro
 	}
 
 	return &models.UserData{
-		ID:       res.Id,
-		Name:     res.Name,
-		DataType: res.DataType,
-		Version:  res.Version,
-		Data:     encrypter.Decrypt(res.Data, c.config.PassPhrase),
+		ID:        res.Id,
+		Name:      res.Name,
+		DataType:  res.DataType,
+		Version:   res.Version,
+		Data:      encrypter.Decrypt(res.Data, c.config.PassPhrase),
+		CreatedAt: res.CreateAt,
 	}, nil
 }
 
@@ -51,5 +52,26 @@ func (c *Client) GetUserDataList() ([]models.UserDataList, error) {
 		records = append(records, rec)
 	}
 
+	return records, nil
+}
+
+func (c *Client) SyncUserData(in int64) ([]models.UserDataList, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), c.timeout)
+	defer cancel()
+	req := &pb.SyncTimestamp{Ts: in}
+	res, err := c.gRPCClient.SyncUserData(ctx, req)
+	if err != nil {
+		return nil, fmt.Errorf("%w: gRPC GetUserDataList error: %w", ErrRequest, err)
+	}
+	records := make([]models.UserDataList, 0, len(res.Data))
+	for _, el := range res.Data {
+		rec := models.UserDataList{
+			ID:       el.Id,
+			Name:     el.Name,
+			DataType: el.DataType,
+			Version:  el.Version,
+		}
+		records = append(records, rec)
+	}
 	return records, nil
 }

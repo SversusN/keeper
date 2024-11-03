@@ -3,6 +3,7 @@ package cache
 import (
 	"errors"
 	"sync"
+	"time"
 
 	"github.com/SversusN/keeper/internal/client/models"
 )
@@ -54,4 +55,21 @@ func (c *Cache) GetUserDataList() []models.UserDataList {
 	})
 
 	return records
+}
+
+// GetMaxTS получает максимальную дату информации пользователя
+func (c *Cache) GetMaxTS() (int64, error) {
+	var maxDate int64
+	maxDate = 0
+	c.mem.Range(func(k, v interface{}) bool {
+		temp, err := time.Parse(time.DateTime, v.(*models.UserData).CreatedAt)
+		if err != nil {
+			return false
+		}
+		if temp.Unix() > maxDate {
+			maxDate = temp.Unix()
+		}
+		return true
+	})
+	return maxDate, nil
 }

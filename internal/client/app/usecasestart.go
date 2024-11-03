@@ -17,6 +17,8 @@ import (
 func (c *Client) Start() error {
 	ctx, cancelCtx := signal.NotifyContext(context.Background(), syscall.SIGQUIT, syscall.SIGTERM, syscall.SIGINT)
 	defer cancelCtx()
+	isSignIn.Store(false)
+
 	c.printer.PrintLogo()
 	c.printer.Print("Здравствуйте и dont panic! Я ваш менеджер паролей.")
 	c.printer.Print(fmt.Sprintf("Версия %s от %s", c.buildVersion, c.buildDate))
@@ -24,6 +26,10 @@ func (c *Client) Start() error {
 	if err := c.UserAuth(); err != nil {
 		c.Logger.Log.Error(err)
 		return err
+	}
+	ok := isSignIn.CompareAndSwap(false, true)
+	if !ok {
+		c.Logger.Log.Error(internalerrors.ErrInternal)
 	}
 	grp, ctx := errgroup.WithContext(ctx)
 	grp.Go(func() error {
