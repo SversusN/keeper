@@ -87,6 +87,11 @@ func buildPassword(p printer) (*models.UserData, error) {
 	if err != nil {
 		return nil, fmt.Errorf(InternalErrTemplate, internalerrors.ErrInternal, err)
 	}
+	fmt.Print(metaPass)
+	_, err = p.Scan(&pass.MetaInfo)
+	if err != nil {
+		return nil, fmt.Errorf(InternalErrTemplate, internalerrors.ErrInternal, err)
+	}
 
 	bd, err := json.Marshal(pass)
 	if err != nil {
@@ -118,6 +123,11 @@ func buildCardData(p printer) (*models.UserData, error) {
 	if err != nil {
 		return nil, fmt.Errorf(InternalErrTemplate, internalerrors.ErrInternal, err)
 	}
+	fmt.Print(metaCard)
+	_, err = p.Scan(&card.MetaInfo)
+	if err != nil {
+		return nil, fmt.Errorf(InternalErrTemplate, internalerrors.ErrInternal, err)
+	}
 
 	//	byteData, err := easyjson.Marshal(card)
 	bd, err := json.Marshal(card)
@@ -137,6 +147,11 @@ func buildTextData(p printer) (*models.UserData, error) {
 	//Нужно учесть пробелы
 	in := bufio.NewReader(os.Stdin)
 	t, err := in.ReadString('\n')
+	if err != nil {
+		return nil, fmt.Errorf(InternalErrTemplate, internalerrors.ErrInternal, err)
+	}
+	fmt.Print(metaText)
+	_, err = p.Scan(&text.MetaInfo)
 	if err != nil {
 		return nil, fmt.Errorf(InternalErrTemplate, internalerrors.ErrInternal, err)
 	}
@@ -184,6 +199,11 @@ func buildFileData(p printer) (*models.UserData, error) {
 	file.Data = bs
 
 	bd, err := json.Marshal(file)
+	if err != nil {
+		return nil, fmt.Errorf(InternalErrTemplate, internalerrors.ErrInternal, err)
+	}
+	fmt.Print(metaFile)
+	_, err = p.Scan(&file.MetaInfo)
 	if err != nil {
 		return nil, fmt.Errorf(InternalErrTemplate, internalerrors.ErrInternal, err)
 	}

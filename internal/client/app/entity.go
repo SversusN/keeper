@@ -8,6 +8,8 @@ type PasswordData struct {
 	Login string `json:"login"`
 	// Password – пароль пользователя.
 	Password string `json:"password"`
+	// MetaInfo - метаинформация для пароля
+	MetaInfo string `json:"meta_info"`
 }
 
 // CardData – структура для типа данных Карта.
@@ -18,6 +20,8 @@ type CardData struct {
 	ExpDate string `json:"exp_date"`
 	// CardHolder – держатель карты.
 	CardHolder string `json:"card_holder"`
+	// MetaInfo - метаинформация для пароля
+	MetaInfo string `json:"meta_info"`
 }
 
 // FileData – структура для типа данных Файл.
@@ -26,10 +30,14 @@ type FileData struct {
 	Path string `json:"path"`
 	// Data – файл в бинарном представлении.
 	Data []byte `json:"data"`
+	// MetaInfo - метаинформация для файла
+	MetaInfo string `json:"meta_info"`
 }
 
 // TextData – структура для типа данных Текст.
 type TextData struct {
 	// Text – текст.
 	Text string `json:"text"`
+	// MetaInfo - метаинформация для записи
+	MetaInfo string `json:"meta_info"`
 }
