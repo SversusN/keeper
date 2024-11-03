@@ -88,6 +88,7 @@ func (c *Client) startSync() {
 				continue
 			}
 			c.UpdateDataInCache(model)
+			ticker.Reset(time.Duration(c.Config.CashTimeRefresh) * time.Second)
 		case <-ticker.C:
 			if !isSignIn.Load() || isSyncProces.Load() {
 				continue //не запрашиваем если не залогинены или eщe идет синхронизация
