@@ -1,0 +1,101 @@
+syntax = "proto3";
+
+package keeper;
+
+option go_package = "pkg/grpc/keeper";
+
+// Keeper – сервис хранения и работы с приватными данными – такими, как:
+// пароли, карточные данные пользователя, файлы и любые текстовые данные
+service Keeper {
+  rpc Ping(PingRequest) returns(PingResponse);
+  rpc Register(RegisterRequest) returns(RegisterResponse);
+  rpc SignIn(SignInRequest) returns(SignInResponse);
+  rpc SaveData(SaveDataRequest) returns(SaveDataResponse);
+  rpc GetUserDataList(UserDataListRequest) returns(UserDataListResponse);
+  rpc GetUserData(UserDataRequest) returns(UserDataResponse);
+  rpc UpdateUserData(UpdateUserDataRequest) returns(UpdateUserDataResponse);
+  rpc SyncUserData(SyncTimestamp) returns(UserDataListResponse);
+}
+
+// PingRequest - запрос на ping (empty)
+message PingRequest{}
+// PingResponse - ответ на ping
+message PingResponse{
+  string result = 1;
+}
+
+// RegisterRequest – запрос на регистрацию пользователя
+message RegisterRequest{
+  string login = 1;
+  string password = 2;
+}
+// RegisterResponse – ответ сервера при регистрации (токен)
+message RegisterResponse{
+  string token = 1;
+}
+
+// SignInRequest – запрос на вход пользователя
+message SignInRequest{
+  string login = 1;
+  string password = 2;
+}
+// SignInResponse – ответ на вход пользователя
+message SignInResponse{
+  // token – AuthToken для доступа к ресурсам
+  string token = 1;
+}
+
+// SaveDataRequest – запрос на сохранение бинарных данный
+message SaveDataRequest{
+  string name = 1;
+  bytes data = 2;
+  string data_type = 3;
+}
+// SaveDataResponse – результат сохранения
+message SaveDataResponse{
+  string result = 1;
+}
+
+// GetUserDataRequest – запрос на получение списка данных по конкретному пользователю
+message UserDataListRequest{}
+// GetUserDataListResponse – список сохранённых данных пользователя
+message UserDataListResponse{
+  repeated UserDataInfo data = 1;
+}
+// UserDataInfo – метаданные (без поля data)
+message UserDataInfo{
+  int64 id = 1;
+  string name = 2;
+  string data_type = 3;
+  int64 version = 4;
+  string create_at = 5;
+}
+
+// UserDataRequest – запрос на получение конкретных данных пользователя
+message UserDataRequest{
+  int64 id = 1;
+}
+// UserDataResponse – данные пользователя по id
+message UserDataResponse{
+  int64 id = 1;
+  string name = 2;
+  bytes data = 3;
+  string data_type = 4;
+  int64 version = 5;
+  string create_at = 6;
+}
+
+// UpdateUserDataRequest – запрос на обновление данных
+message UpdateUserDataRequest{
+  int64 id = 1;
+  bytes data = 2;
+  int64 version = 3;
+}
+// UpdateUserDataResponse – результат обновления
+message UpdateUserDataResponse{
+  string result = 1;
+}
+//SyncTimestamp запрашиваем по метке времени чего не хватает
+message SyncTimestamp{
+  int64 ts = 1;
+}
